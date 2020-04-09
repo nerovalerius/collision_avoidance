@@ -18,7 +18,7 @@ gnome-terminal -e "rosrun tf static_transform_publisher 0.5 -1.0 -1.6 -1.0 -0.1 
 
 
 echo "Start Collision Avoidance"
-gnome-terminal -e "bash -c 'rosrun collision_avoidance collision_avoidance allsteps=true'"
+gnome-terminal -e "bash -c 'rosrun collision_avoidance collision_avoidance passthrough=true'"
 sleep 1
 
 

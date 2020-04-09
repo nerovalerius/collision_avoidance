@@ -150,22 +150,9 @@ link_directories(${PCL_LIBRARY_DIRS})
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(${PROJECT_NAME}_node src/perception_node.cpp)
 
-add_executable(pcl_framesaver src/pcl_framesaver.cpp)
-add_executable(pcl_viewer src/pcl_viewer.cpp)
-add_executable(preprocess_align_publish src/preprocess_align_publish.cpp)
-add_executable(pcl_vizualizer src/pcl_vizualizer.cpp)
+add_executable(collision_avoidance src/collision_avoidance.cpp)
 
-
-target_link_libraries(pcl_framesaver ${catkin_LIBRARIES}	
-  ${PCL_LIBRARIES})
-
-target_link_libraries(pcl_viewer ${catkin_LIBRARIES}	
-  ${PCL_LIBRARIES})
-
-target_link_libraries(preprocess_align_publish ${catkin_LIBRARIES}	
-${PCL_LIBRARIES})
-
-target_link_libraries(pcl_vizualizer ${catkin_LIBRARIES}	
+target_link_libraries(collision_avoidance ${catkin_LIBRARIES}	
 ${PCL_LIBRARIES})
 
 

@@ -150,9 +150,12 @@ link_directories(${PCL_LIBRARY_DIRS})
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(${PROJECT_NAME}_node src/perception_node.cpp)
 
-add_executable(collision_avoidance src/collision_avoidance.cpp)
+add_executable(pointcloud_preprocessing src/pointcloud_preprocessing.cpp)
+add_executable(pcd2ply src/pcd2ply.cpp)
 
-target_link_libraries(collision_avoidance ${catkin_LIBRARIES}	
+target_link_libraries(pcd2ply ${catkin_LIBRARIES}	
+${PCL_LIBRARIES})
+target_link_libraries(pointcloud_preprocessing ${catkin_LIBRARIES}	
 ${PCL_LIBRARIES})
 
 

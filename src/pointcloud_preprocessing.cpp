@@ -67,11 +67,11 @@ public:
   // Container for original & filtered data
   pcl::PCLPointCloud2* input_cloud_1;
   pcl::PCLPointCloud2* input_cloud_2;
-  pcl::PCLPointCloud2 output_cloud_2, output_cloud_1, merged_output_cloud;
+  pcl::PCLPointCloud2 output_cloud_2, output_cloud_1;
 
   // Publishers and Subscibers
   ros::Subscriber sub_cloud_1, sub_cloud_2; 
-  ros::Publisher pub_cloud_1, pub_cloud_2, pub_both;
+  ros::Publisher pub_cloud_1, pub_cloud_2;
 
   // Callback Functions
   void Cloud1Callback(const sensor_msgs::PointCloud2ConstPtr& cloud_msg);
@@ -93,7 +93,7 @@ std::pair<bool, int> WorkspaceMapping::ProcessArguments(int argc, char **argv)
 {
   if (argc < 2)
   {
-    std::cout << "not enough arguments - type --help for more info" << std::endl;
+    std::cout << " " << std::endl;
     return std::make_pair(false, -1);
   }
 
@@ -305,11 +305,12 @@ int WorkspaceMapping::run(int argc, char **argv)
 int main(int argc, char **argv)
 {
 
+  // Init Preprocessing Class
   WorkspaceMapping workspaceMapping;
   workspaceMapping.run(argc, argv);
 
-
-  ros::init(argc, argv, "collision_avoidance");
+  // Init ROS Node
+  ros::init(argc, argv, "pointcloud_preprocessing");
   ros::NodeHandle nh;
 
   // Some clouds for conversion and merging
@@ -325,27 +326,11 @@ int main(int argc, char **argv)
   workspaceMapping.pub_cloud_1 = nh.advertise<sensor_msgs::PointCloud2> ("/cam_1/depth/color/points_processed", 1);
   workspaceMapping.sub_cloud_2 = nh.subscribe<sensor_msgs::PointCloud2> ("/cam_2/depth/color/points", 1, &WorkspaceMapping::Cloud2Callback, &workspaceMapping);
   workspaceMapping.pub_cloud_2 = nh.advertise<sensor_msgs::PointCloud2> ("/cam_2/depth/color/points_processed", 1);
-  workspaceMapping.pub_both = nh.advertise<sensor_msgs::PointCloud2> ("/both_cams/depth/color/points_processed", 1);
 
-  std::cout << "collision_avoidance" << std::endl;
 
-  while(ros::ok){
+  std::cout << "pointcloud_preprocessing" << std::endl;
 
-    /*
-    pcl::fromPCLPointCloud2( workspaceMapping.output_cloud_1, output_cloud_1);
-    pcl::fromPCLPointCloud2( workspaceMapping.output_cloud_1, output_cloud_2);
-
-    output_cloud_merged = output_cloud_1 + output_cloud_2;
-    
-    //Convert back to PointCloud 2
-    pcl::toPCLPointCloud2(output_cloud_merged, output_cloud_merged_2);
-
-    workspaceMapping.pub_both.publish(output_cloud_merged_2);
-    */
-
-    
-    ros::spinOnce();
-  }
+  ros::spin();
 
 
 }

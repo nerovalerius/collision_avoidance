@@ -1,8 +1,8 @@
 # Collision Avoidance in a Human-Robot Collaborative Workspace using 2 Intel D435 3D-Cameras
 Point Cloud Library, Robot Operating System, Intel D435, OctoMaps, MoveIt!, Rviz
 
-https://github.com/nerovalerius/collision_avoidance/images/full_desk.jpg
 
+![alt text](https://raw.githubusercontent.com/nerovalerius/collision_avoidance/master/images/full_desk.jpg)
 
 
 This package is built to filter two ROS PointCloud2 streams from two intel D435 Cameras, 

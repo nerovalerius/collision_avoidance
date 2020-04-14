@@ -65,9 +65,9 @@ public:
   int run(int argc, char **argv);
 
   // Container for original & filtered data
-  pcl::PCLPointCloud2* input_cloud_1;
-  pcl::PCLPointCloud2* input_cloud_2;
-  pcl::PCLPointCloud2 output_cloud_2, output_cloud_1;
+  pcl::PointCloud<pcl::PointXYZRGB> * input_cloud_1;
+  pcl::PointCloud<pcl::PointXYZRGB>* input_cloud_2;
+  pcl::PointCloud<pcl::PointXYZRGB> output_cloud_2, output_cloud_1;
 
   // Publishers and Subscibers
   ros::Subscriber sub_cloud_1, sub_cloud_2; 
@@ -79,11 +79,10 @@ public:
 
 private:
   std::pair<bool, int> ProcessArguments(int argc, char **argv);
-  void PassthroughFilter(pcl::PCLPointCloud2ConstPtr input_cloud, pcl::PCLPointCloud2 & output_cloud);
-  void Downsampling(pcl::PCLPointCloud2ConstPtr input_cloud, pcl::PCLPointCloud2 & output_cloud);
-  void RemoveOutliers(pcl::PCLPointCloud2ConstPtr input_cloud, pcl::PCLPointCloud2 & output_cloud);
+  void PassthroughFilter(pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud);
+  void Downsampling(pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud);
+  void RemoveOutliers(pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud);
 };
-
 
 
 // ----------------------------------------------------------
@@ -159,32 +158,31 @@ std::pair<bool, int> WorkspaceMapping::ProcessArguments(int argc, char **argv)
 void WorkspaceMapping::Cloud1Callback (const sensor_msgs::PointCloud2ConstPtr& cloud_msg)
 {
   // Container for original & filtered data
-  input_cloud_1 = new pcl::PCLPointCloud2; 
-  pcl::PCLPointCloud2ConstPtr input_cloud_1_ptr(input_cloud_1);
-  
+  pcl::PointCloud<pcl::PointXYZRGB>::Ptr input_cloud_1_ptr(new pcl::PointCloud<pcl::PointXYZRGB>);
 
   // Convert to PCL data type
-  pcl_conversions::toPCL(*cloud_msg, *input_cloud_1);
+  pcl::fromROSMsg(*cloud_msg, *input_cloud_1_ptr);
+  
+  // Remove NaN Points from cloud - should speed up filter algorithms
+  std::vector<int> indices;
+  pcl::removeNaNFromPointCloud(*input_cloud_1_ptr, *input_cloud_1_ptr, indices); 
 
   // Perform the actual filtering
   if (passthrough_active){
-    PassthroughFilter(input_cloud_1_ptr, output_cloud_1);
+    PassthroughFilter(input_cloud_1_ptr);
   }
   if (downsampling_active){
-    *input_cloud_1 = output_cloud_1;
-    Downsampling(input_cloud_1_ptr, output_cloud_1);
+    Downsampling(input_cloud_1_ptr);
   }
   if (outlier_active){
-    *input_cloud_1 = output_cloud_1;
-    RemoveOutliers(input_cloud_1_ptr, output_cloud_1);
+    RemoveOutliers(input_cloud_1_ptr);
   }
 
   // Convert to ROS data type
   sensor_msgs::PointCloud2 output;
-  pcl_conversions::moveFromPCL(output_cloud_1, output);
+  pcl::toROSMsg(*input_cloud_1_ptr, output);
 
   pub_cloud_1.publish(output);
-
 }
 
 // ----------------------------------------------------------
@@ -194,33 +192,32 @@ void WorkspaceMapping::Cloud1Callback (const sensor_msgs::PointCloud2ConstPtr& c
 
 void WorkspaceMapping::Cloud2Callback (const sensor_msgs::PointCloud2ConstPtr& cloud_msg)
 {
-  // Container for original & filtered data
-  input_cloud_2 = new pcl::PCLPointCloud2; 
-  pcl::PCLPointCloud2ConstPtr input_cloud_2_ptr(input_cloud_2);
+   // Container for original & filtered data
+  pcl::PointCloud<pcl::PointXYZRGB>::Ptr input_cloud_2_ptr(new pcl::PointCloud<pcl::PointXYZRGB>);
 
   // Convert to PCL data type
-  pcl_conversions::toPCL(*cloud_msg, *input_cloud_2);
+  pcl::fromROSMsg(*cloud_msg, *input_cloud_2_ptr);
+  
+  // Remove NaN Points from cloud - should speed up filter algorithms
+  std::vector<int> indices;
+  pcl::removeNaNFromPointCloud(*input_cloud_2_ptr, *input_cloud_2_ptr, indices); 
 
   // Perform the actual filtering
   if (passthrough_active){
-    PassthroughFilter(input_cloud_2_ptr, output_cloud_2);
+    PassthroughFilter(input_cloud_2_ptr);
   }
   if (downsampling_active){
-    *input_cloud_2 = output_cloud_2;
-    Downsampling(input_cloud_2_ptr, output_cloud_2);
+    Downsampling(input_cloud_2_ptr);
   }
   if (outlier_active){
-    *input_cloud_2 = output_cloud_2;
-    RemoveOutliers(input_cloud_2_ptr, output_cloud_2);
+    RemoveOutliers(input_cloud_2_ptr);
   }
 
   // Convert to ROS data type
   sensor_msgs::PointCloud2 output;
-  pcl_conversions::moveFromPCL(output_cloud_2, output);
-
+  pcl::toROSMsg(*input_cloud_2_ptr, output);
 
   pub_cloud_2.publish(output);
-
 }
 
 
@@ -228,18 +225,18 @@ void WorkspaceMapping::Cloud2Callback (const sensor_msgs::PointCloud2ConstPtr& c
 //                       PASSTHROUGH FILTER
 // ----------------------------------------------------------
 
-void WorkspaceMapping::PassthroughFilter(pcl::PCLPointCloud2ConstPtr input_cloud, pcl::PCLPointCloud2 & output_cloud)
+void WorkspaceMapping::PassthroughFilter(pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud)
 {
   // Configure the filter
-  pcl::PassThrough<pcl::PCLPointCloud2> passthrough_filter;
+  pcl::PassThrough<pcl::PointXYZRGB> passthrough_filter;
   passthrough_filter.setFilterFieldName("z");
 
   // Set filter from 0.5m to 2.1m
   passthrough_filter.setFilterLimits(0.5, 2.1);
 
   // Apply passthrough filter
-  passthrough_filter.setInputCloud(input_cloud);
-  passthrough_filter.filter(output_cloud);
+  passthrough_filter.setInputCloud(cloud);
+  passthrough_filter.filter(*cloud);
 }
 
 
@@ -247,17 +244,17 @@ void WorkspaceMapping::PassthroughFilter(pcl::PCLPointCloud2ConstPtr input_cloud
 //                       VOXELGRID FILTER
 // ----------------------------------------------------------
 
-void WorkspaceMapping::Downsampling(pcl::PCLPointCloud2ConstPtr input_cloud, pcl::PCLPointCloud2 & output_cloud)
+void WorkspaceMapping::Downsampling(pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud)
 {
   // Downsampling of the point clouds using a voxelgrid filter
   // significantly reduces computing time in the next steps
 
   // Configure the filter
-  pcl::VoxelGrid<pcl::PCLPointCloud2> voxelgrid_filter;
+  pcl::VoxelGrid<pcl::PointXYZRGB> voxelgrid_filter;
   voxelgrid_filter.setLeafSize(0.02, 0.02, 0.02);
 
-  voxelgrid_filter.setInputCloud(input_cloud);
-  voxelgrid_filter.filter(output_cloud);
+  voxelgrid_filter.setInputCloud(cloud);
+  voxelgrid_filter.filter(*cloud);
 }
 
 
@@ -265,16 +262,16 @@ void WorkspaceMapping::Downsampling(pcl::PCLPointCloud2ConstPtr input_cloud, pcl
 //                       OUTLIER FILTER
 // ----------------------------------------------------------
 
-void WorkspaceMapping::RemoveOutliers(pcl::PCLPointCloud2ConstPtr input_cloud, pcl::PCLPointCloud2 & output_cloud)
+void WorkspaceMapping::RemoveOutliers(pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud)
 {
   // Configure the filter
-  pcl::StatisticalOutlierRemoval<pcl::PCLPointCloud2> outlier_filter;
+  pcl::StatisticalOutlierRemoval<pcl::PointXYZRGB> outlier_filter;
 
   // Apply outlier filter
-  outlier_filter.setInputCloud(input_cloud);
+  outlier_filter.setInputCloud(cloud);
   outlier_filter.setMeanK(50);
   outlier_filter.setStddevMulThresh(1.0);
-  outlier_filter.filter(output_cloud);
+  outlier_filter.filter(*cloud);
 }
 
 
@@ -312,14 +309,6 @@ int main(int argc, char **argv)
   // Init ROS Node
   ros::init(argc, argv, "pointcloud_preprocessing");
   ros::NodeHandle nh;
-
-  // Some clouds for conversion and merging
-	pcl::PointCloud<pcl::PointXYZRGBA> output_cloud_1;
-  pcl::PointCloud<pcl::PointXYZRGBA> output_cloud_2;
-  pcl::PointCloud<pcl::PointXYZRGBA> output_cloud_merged;
-  pcl::PCLPointCloud2 output_cloud_merged_2;
-
-
 
   // Create a ROS subscriber for the input point cloud
   workspaceMapping.sub_cloud_1 = nh.subscribe<sensor_msgs::PointCloud2> ("/cam_1/depth/color/points", 1, &WorkspaceMapping::Cloud1Callback, &workspaceMapping);

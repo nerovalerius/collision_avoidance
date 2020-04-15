@@ -21,7 +21,7 @@ find_package(catkin REQUIRED COMPONENTS
 )
 
 find_package(PCL	REQUIRED)	
-
+find_package(octomap REQUIRED)
 
 
 ## System dependencies are found with CMake's conventions
@@ -131,7 +131,9 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
+
 include_directories(include	${PCL_INCLUDE_DIRS})	
+include_directories(${OCTOMAP_INCLUDE_DIRS})
 link_directories(${PCL_LIBRARY_DIRS})	
 
 
@@ -150,13 +152,20 @@ link_directories(${PCL_LIBRARY_DIRS})
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(${PROJECT_NAME}_node src/perception_node.cpp)
 
-add_executable(pointcloud_preprocessing src/pointcloud_preprocessing.cpp)
+
 add_executable(pcd2ply src/pcd2ply.cpp)
+add_executable(octomap_framesaver src/octomap_framesaver.cpp)
+add_executable(pointcloud_preprocessing src/pointcloud_preprocessing.cpp)
 
 target_link_libraries(pcd2ply ${catkin_LIBRARIES}	
 ${PCL_LIBRARIES})
-target_link_libraries(pointcloud_preprocessing ${catkin_LIBRARIES}	
+target_link_libraries(octomap_framesaver ${catkin_LIBRARIES}	
+${OCTOMAP_LIBRARIES}
 ${PCL_LIBRARIES})
+target_link_libraries(pointcloud_preprocessing ${catkin_LIBRARIES}
+${PCL_LIBRARIES})
+
+
 
 
 ## Rename C++ executable without prefix

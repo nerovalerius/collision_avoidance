@@ -18,6 +18,8 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   sensor_msgs
   std_msgs
+  moveit_core
+  moveit_ros_planning_interface
 )
 
 find_package(PCL	REQUIRED)	
@@ -114,10 +116,13 @@ find_package(octomap REQUIRED)
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
+  CATKIN_DEPENDS
 #  INCLUDE_DIRS include
 #  LIBRARIES perception
 #  CATKIN_DEPENDS pcl_conversions pcl_msgs pcl_ros roscpp rospy sensor_msgs std_msgs
 #  DEPENDS system_lib
+  moveit_core
+  moveit_ros_planning_interface
 )
 
 ###########
@@ -156,13 +161,21 @@ link_directories(${PCL_LIBRARY_DIRS})
 add_executable(pcd2ply src/pcd2ply.cpp)
 add_executable(octomap_framesaver src/octomap_framesaver.cpp)
 add_executable(pointcloud_preprocessing src/pointcloud_preprocessing.cpp)
+add_executable(planning_scene_operations src/planning_scene_operations.cpp)
+add_executable(pcl_octo_analyzer src/pcl_octo_analyzer.cpp)
 
 target_link_libraries(pcd2ply ${catkin_LIBRARIES}	
 ${PCL_LIBRARIES})
 target_link_libraries(octomap_framesaver ${catkin_LIBRARIES}	
 ${OCTOMAP_LIBRARIES}
 ${PCL_LIBRARIES})
+target_link_libraries(planning_scene_operations ${catkin_LIBRARIES}	
+${OCTOMAP_LIBRARIES}
+${PCL_LIBRARIES})
 target_link_libraries(pointcloud_preprocessing ${catkin_LIBRARIES}
+${PCL_LIBRARIES})
+target_link_libraries(pcl_octo_analyzer ${catkin_LIBRARIES}
+${OCTOMAP_LIBRARIES}
 ${PCL_LIBRARIES})
 
 

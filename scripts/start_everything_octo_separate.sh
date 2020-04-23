@@ -15,15 +15,19 @@ gnome-terminal -e "bash -c 'rosrun registration_3d preprocess_align_publish alls
 sleep 7
 
 echo "Aligning 3D Cameras to Desk"
-gnome-terminal -e "rosrun tf static_transform_publisher 0.55 1.1 1.4 0 0.1 2.44 world cam_2_depth_optical_frame 3" 
+gnome-terminal -e "rosrun tf static_transform_publisher 0.55 1.1 1.5 0 0.1 2.44 world cam_2_depth_optical_frame 3" 
 sleep 1
 
 echo "Preprocess Point Clouds"
 gnome-terminal -e "bash -c 'rosrun collision_avoidance pointcloud_preprocessing passthrough=true'"
 sleep 1
 
-echo "Starting MoveIt! and Rviz"
-gnome-terminal -e "bash -c 'roslaunch collision_avoidance collision_avoidance.launch'"
+echo "Start Octomap Servers"
+gnome-terminal -e "bash -c 'roslaunch collision_avoidance octomap_servers.launch'"
+sleep 1
+
+echo "Starting Rviz"
+gnome-terminal -e "bash -c 'rviz'"
 sleep 1
 
 echo "Finished"

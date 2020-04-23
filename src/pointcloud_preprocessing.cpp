@@ -1,17 +1,20 @@
-
-
-
 /*  ____      _ _ _     _                  _             _     _                      
 *  / ___|___ | | (_)___(_) ___  _ __      / \__   _____ (_) __| | __ _ _ __   ___ ___ 
 * | |   / _ \| | | / __| |/ _ \| '_ \    / _ \ \ / / _ \| |/ _` |/ _` | '_ \ / __/ _ \
 * | |__| (_) | | | \__ \ | (_) | | | |  / ___ \ V / (_) | | (_| | (_| | | | | (_|  __/
 *  \____\___/|_|_|_|___/_|\___/|_| |_| /_/   \_\_/ \___/|_|\__,_|\__,_|_| |_|\___\___|
 *                                                                                    
-*                                                                                                
+*  https://github.com/nerovalerius/collision_avoidance                    
+*
 *  Armin Niedermüller
+*  https://www.armin-niedermueller.net
+*  https://www.linkedin.com/in/armin-niedermüller-317516159/ 
+*
 *
 */
-                                                                                                                                                         
+
+
+                                                                                                                                                        
 #include <pcl/io/pcd_io.h>
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
@@ -232,7 +235,7 @@ void WorkspaceMapping::PassthroughFilter(pcl::PointCloud<pcl::PointXYZRGB>::Ptr 
   passthrough_filter.setFilterFieldName("z");
 
   // Set filter from 0.5m to 2.1m
-  passthrough_filter.setFilterLimits(0.5, 2.1);
+  passthrough_filter.setFilterLimits(0.5, 2.4);
 
   // Apply passthrough filter
   passthrough_filter.setInputCloud(cloud);

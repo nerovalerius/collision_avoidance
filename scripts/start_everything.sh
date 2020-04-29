@@ -15,7 +15,7 @@ gnome-terminal -e "bash -c 'rosrun registration_3d preprocess_align_publish alls
 sleep 7
 
 echo "Aligning 3D Cameras to Desk"
-gnome-terminal -e "rosrun tf static_transform_publisher 0.55 1.1 1.4 0 0.1 2.44 world cam_2_depth_optical_frame 3" 
+gnome-terminal -e "rosrun tf static_transform_publisher 0.60 1.1 1.5 0 0.1 2.44 world cam_2_depth_optical_frame 3" 
 sleep 1
 
 echo "Preprocess Point Clouds"

@@ -89,12 +89,28 @@ main(int	argc,	char**	argv) {
 
     // Passthrough / Cropbox filtering
     double minX, minY, minZ, maxX, maxY, maxZ;
-    minX = -0.0;
-    minY = -1.5;
-    minZ = 0.5;
-    maxX = 0.5;
-    maxY = -0.8;
-    maxZ = 1.51;
+    minX = 0.1;
+    minY = -1.8;
+    minZ = 1.5;
+    maxX = 0.9;
+    maxY = -0.7;
+    maxZ = 1.63;
+
+    // Values for the measure field on the desk (ground truth vs octomap)
+    // minX = -0.0;
+    // minY = -1.5;
+    // minZ = 0.5;
+    // maxX = 0.5;
+    // maxY = -0.8;
+    // maxZ = 1.51;
+
+    // Values for noise measure of the desk
+    // minX = 0.1;
+    // minY = -1.8;
+    // minZ = 1.5;
+    // maxX = 0.9;
+    // maxY = -0.7;
+    // maxZ = 1.63;
 
 
     // Configure the Passthrough Filter - X - Axis
@@ -103,6 +119,13 @@ main(int	argc,	char**	argv) {
     boxFilter.setMax(Eigen::Vector4f(maxX, maxY, maxZ, 1.0));
     boxFilter.setInputCloud(transformed_cloud);
     boxFilter.filter(*transformed_cloud);
+
+    // Store all Z-Values of the points into a vector
+    float min_noise_z, max_noise_z;
+    std::vector<float> z_vals;
+    for(pcl::PointCloud<pcl::PointXYZRGB>::iterator it = transformed_cloud->begin(); it != transformed_cloud->end(); it++){
+        z_vals.push_back(it->z);
+    }
 
     // The octree
     double resolution = 0.05;
@@ -159,13 +182,20 @@ main(int	argc,	char**	argv) {
     // Save the PointClouds and OctoMaps into a file
     pcl::io::savePCDFileASCII("./cloud.pcd", *transformed_cloud);
     tree.writeBinary("./cloud.bt");
-
+    /*
     // Output    
+    std::cout << "z_values: "                                       << std::endl;
+    for(auto z_val : z_vals){
+        std::cout << z_val << "," << std::endl;
+    }
+    */
+
     std::cout << "vol_occ: "        << vol_occ              << "m³" << std::endl;
     std::cout << "vol_free: "       << vol_free             << "m³" << std::endl;
     std::cout << "vol_unknown: "    << vol_unkn             << "m³" << std::endl;
     std::cout << "vol_tot: "        << vol_tot              << "m³" << std::endl;
     std::cout << "vol_box: "        << (vol_occ + vol_unkn) << "m³" << std::endl;
+
 
     return	0;	
 }	

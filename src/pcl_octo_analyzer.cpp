@@ -60,8 +60,11 @@ main(int	argc,	char**	argv) {
     Eigen::Matrix4f transform_x = Eigen::Matrix4f::Identity();
     Eigen::Matrix4f transform_z = Eigen::Matrix4f::Identity();
 
-    // 45 Degrees
+    // -30 Degrees
     int angle = -30;
+
+    // Angle for the other camera
+    // angle = -35
 
     // Rotate fist pointcloud by 45° in X axis
     transform_x(0, 0) = 1;
@@ -89,12 +92,20 @@ main(int	argc,	char**	argv) {
 
     // Passthrough / Cropbox filtering
     double minX, minY, minZ, maxX, maxY, maxZ;
-    minX = 0.1;
-    minY = -1.8;
-    minZ = 1.5;
-    maxX = 0.9;
-    maxY = -0.7;
-    maxZ = 1.63;
+    minX = -0.0;
+    minY = -1.5;
+    minZ = 0.5;
+    maxX = 0.5;
+    maxY = -0.8;
+    maxZ = 1.51;
+
+    // Values for the other camera - noise measure
+    // minX_2 = -0.3;
+    // minY_2 = -1.3;
+    // minZ_2 =  1.5;
+    // maxX_2 =  0.3;
+    // maxY_2 = -0.2;
+    // maxZ_2 =  1.8;
 
     // Values for the measure field on the desk (ground truth vs octomap)
     // minX = -0.0;
@@ -195,7 +206,7 @@ main(int	argc,	char**	argv) {
     std::cout << "vol_unknown: "    << vol_unkn             << "m³" << std::endl;
     std::cout << "vol_tot: "        << vol_tot              << "m³" << std::endl;
     std::cout << "vol_box: "        << (vol_occ + vol_unkn) << "m³" << std::endl;
-
+    std::cout << "dimensions of the box " << "X: " << max_x - min_x << " m" << " ,Y: " << max_y - min_y << " m" << " ,Z: " << max_z - min_z << " m" << std::endl;
 
     return	0;	
 }	

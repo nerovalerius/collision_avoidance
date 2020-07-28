@@ -26,6 +26,8 @@
 #include <pcl/filters/voxel_grid.h>
 #include <pcl/filters/passthrough.h>
 #include <pcl/filters/statistical_outlier_removal.h>
+#include <pcl/filters/radius_outlier_removal.h>
+#include <pcl/filters/conditional_removal.h>
 
 #include <pcl/features/fpfh_omp.h>
 #include <pcl/features/normal_3d.h>
@@ -254,7 +256,7 @@ void WorkspaceMapping::Downsampling(pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud
 
   // Configure the filter
   pcl::VoxelGrid<pcl::PointXYZRGB> voxelgrid_filter;
-  voxelgrid_filter.setLeafSize(0.02, 0.02, 0.02);
+  voxelgrid_filter.setLeafSize(0.025, 0.025, 0.025); // 0.02    // 0.03  // 0.04
 
   voxelgrid_filter.setInputCloud(cloud);
   voxelgrid_filter.filter(*cloud);
@@ -268,13 +270,21 @@ void WorkspaceMapping::Downsampling(pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud
 void WorkspaceMapping::RemoveOutliers(pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud)
 {
   // Configure the filter
-  pcl::StatisticalOutlierRemoval<pcl::PointXYZRGB> outlier_filter;
+   pcl::StatisticalOutlierRemoval<pcl::PointXYZRGB> outlier_filter;
+  //pcl::RadiusOutlierRemoval<pcl::PointXYZRGB> outlier_filter;
 
   // Apply outlier filter
   outlier_filter.setInputCloud(cloud);
-  outlier_filter.setMeanK(50);
-  outlier_filter.setStddevMulThresh(1.0);
+  outlier_filter.setMeanK(60);   // 100 // 40 // 20
+  outlier_filter.setStddevMulThresh(0.01);   // 0.01 // 0.01  // 0.01 
   outlier_filter.filter(*cloud);
+
+  // outlier_filter.setInputCloud(cloud);
+  // outlier_filter.setRadiusSearch(0.8);
+  // outlier_filter.setMinNeighborsInRadius(1);
+  // outlier_filter.filter(*cloud);
+
+
 }
 
 

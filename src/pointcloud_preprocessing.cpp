@@ -237,7 +237,7 @@ void WorkspaceMapping::PassthroughFilter(pcl::PointCloud<pcl::PointXYZRGB>::Ptr 
   passthrough_filter.setFilterFieldName("z");
 
   // Set filter from 0.5m to 2.1m
-  passthrough_filter.setFilterLimits(0.5, 2.4);
+  passthrough_filter.setFilterLimits(0.7, 3.4);
 
   // Apply passthrough filter
   passthrough_filter.setInputCloud(cloud);

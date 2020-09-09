@@ -12,6 +12,7 @@ Afterwards, the point clouds are converted into Octomaps and visualized inside R
 - [Ubuntu Xenial](http://releases.ubuntu.com/16.04/)
 - [ROS Kinetic](http://wiki.ros.org/kinetic)
 
+
 ## Installation
 - Install Ubuntu and ROS.
 - Create a [catkin](http://wiki.ros.org/catkin) workspace (see [Creating a workspace for catkin](http://wiki.ros.org/catkin/Tutorials/create_a_workspace)).
@@ -23,6 +24,16 @@ Afterwards, the point clouds are converted into Octomaps and visualized inside R
     - [realsense-ros](https://github.com/IntelRealSense/realsense-ros.git)
 - Execute `rosdep install -i --from-paths src` from the workspace to install ROS dependencies.
 - Execute `catkin_make` from the workspace to build all packages in the workspace.
+- Download the following rosbag file: [Link](https://drive.google.com/file/d/1eIEW_tNSs0p7Sgny7x9dS-HAtSRvAcDm/view?usp=sharing)
+    - This is a 1 second sequence of both 3D cameras in our laboratory.
+    - Use `rosbag play -l 3d_cams.bag` to loop the 3D camera topics endlessly, simulating our laboratory environment.
+    - A real camera is not needed in this case, and you can test everything.
+
+The rosbag was recorded from both realsense-ros camera nodes with:
+```sh
+rosbag record -a -x "(.*)/cam_1/infra1/(.*)|(.*)/cam_2/infra1/(.*)|(.*)/cam_1/infra2/(.*)|(.*)/cam_2/infra2/(.*)|(.*)/cam_1/color/(.*)|(.*)/cam_2/color/(.*)|(.*)/cam_1/depth/image_rect_raw(.*)|(.*)/cam_2/depth/image_rect_raw/(.*)" --duration=1 -O 3d_cams.bag
+```
+
 
 ## Usage
 This script starts MoveIt and Rviz with a demo robot. MoveIt gets the 3D data of the surroundings via the /move_group/monitored_planning_scene topic

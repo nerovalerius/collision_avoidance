@@ -6,14 +6,7 @@ The cobot is controlled via ROS and Ubuntu.
 The cobot's surroundings are sensed with two Intel D435 3D-Cameras, which are mounted above a human-robot-collaborative (HRC) workspace.
 Their point cloud streams are first semi-automatically aligned with the iterative closest point algorithm (ICP),
 such that the final 3D point cloud stream of the HRC workspace shows the whole workspace almost without any masked areas.
-
-## Contents
-
-Point Cloud Library, Robot Operating System, Intel D435, OctoMaps, MoveIt!, Rviz
-
-This package is built to filter two ROS PointCloud2 streams from two intel D435 Cameras, 
-convert them into Octomaps and align the OctoMaps with a Franka Panda Robot Model inside
-Rviz with MoveIt!
+Afterwards, the point clouds are converted into Octomaps and visualized inside Rviz together with the 3D model of the cobot.
 
 ## Prerequisites
 - [Ubuntu Xenial](http://releases.ubuntu.com/16.04/)
@@ -42,4 +35,4 @@ The Following steps are conducted:
 - Align both 3D images and stream to a united output ros topic
 - Manually align the united 3D point clouds with the MoveIt Panda cobot model via ros tf
 - Preprocess the 3D point clouds - passthrough filter, outlier filter, voxel-grid fiilter
-- Start MoveIt and Rvize together with the 3D cobot model (https://github.com/nerovalerius/collision_avoidance/launch/collision_avoidance.launch)
+- Start MoveIt and Rvize together with the 3D cobot model

@@ -1,4 +1,6 @@
 # Collision Avoidance in a Human-Robot Collaborative Workspace using two Intel D435 3D-Cameras and a Franka Panda Cobot
+![alt text](https://raw.githubusercontent.com/nerovalerius/collision_avoidance/master/images/full_desk.jpg)
+
 This package realizes a software prototype to let a franka panda cobot (collaborative robot) recognize its surroundings with two 3D cameras.
 The cobot is controlled via ROS and Ubuntu.
 The cobot's surroundings are sensed with two Intel D435 3D-Cameras, which are mounted above a human-robot-collaborative (HRC) workspace.
@@ -8,8 +10,6 @@ such that the final 3D point cloud stream of the HRC workspace shows the whole w
 ## Contents
 
 Point Cloud Library, Robot Operating System, Intel D435, OctoMaps, MoveIt!, Rviz
-
-![alt text](https://raw.githubusercontent.com/nerovalerius/collision_avoidance/master/images/full_desk.jpg)
 
 This package is built to filter two ROS PointCloud2 streams from two intel D435 Cameras, 
 convert them into Octomaps and align the OctoMaps with a Franka Panda Robot Model inside

@@ -1,4 +1,12 @@
-# Collision Avoidance in a Human-Robot Collaborative Workspace using two low-cost Intel D435 3D-Cameras
+# Collision Avoidance in a Human-Robot Collaborative Workspace using two Intel D435 3D-Cameras and a Franka Panda Cobot
+This package realizes a software prototype to let a franka panda cobot (collaborative robot) recognize its surroundings with two 3D cameras.
+The cobot is controlled via ROS and Ubuntu.
+The cobot's surroundings are sensed with two Intel D435 3D-Cameras, which are mounted above a human-robot-collaborative (HRC) workspace.
+Their point cloud streams are first semi-automatically aligned with the iterative closest point algorithm (ICP),
+such that the final 3D point cloud stream of the HRC workspace shows the whole workspace almost without any masked areas.
+
+## Contents
+
 Point Cloud Library, Robot Operating System, Intel D435, OctoMaps, MoveIt!, Rviz
 
 ![alt text](https://raw.githubusercontent.com/nerovalerius/collision_avoidance/master/images/full_desk.jpg)
@@ -7,30 +15,30 @@ This package is built to filter two ROS PointCloud2 streams from two intel D435 
 convert them into Octomaps and align the OctoMaps with a Franka Panda Robot Model inside
 Rviz with MoveIt!
 
-## Automated start script
-### package/launch/start_everything.sh
+## Prerequisites
+- [Ubuntu Xenial](http://releases.ubuntu.com/16.04/)
+- [ROS Kinetic](http://wiki.ros.org/kinetic)
+
+## Installation
+- Install Ubuntu and ROS.
+- Create a [catkin](http://wiki.ros.org/catkin) workspace (see [Creating a workspace for catkin](http://wiki.ros.org/catkin/Tutorials/create_a_workspace)).
+- Clone this repository into the workspace's `src` directory.
+- Clone other, required repositories into the `src` directory:
+    - [registration_3d](https://github.com/nerovalerius/registration_3d.git)
+    - [franka_ros](https://github.com/nerovalerius/franka_ros.git)
+    - [panda_moveit_config](https://github.com/nerovalerius/panda_moveit_config.git)
+    - [realsense-ros](https://github.com/IntelRealSense/realsense-ros.git)
+- Execute `rosdep install -i --from-paths src` from the workspace to install ROS dependencies.
+- Execute `catkin_make` from the workspace to build all packages in the workspace.
+
+## Usage
 This script starts MoveIt and Rviz with a demo robot. MoveIt gets the 3D data of the surroundings via the /move_group/monitored_planning_scene topic
-
-Starts the following:
-* Both 3D camera nodes from the realsense-ros package -> www.github.com/nerovalerius/registration_3d/launch/start_3d_cams.launch
-* Alignment of both 3D images -> www.github.com/nerovalerius/registration_3d/preprocess_align_publish.cpp
-* Manual Alignment between the 3D images and the MoveIt Panda cobot model via ros tf
-* Preprocessing of the 3D images - passthrough filtering, outlier filtering, downsampling
-* MoveIt with the 3D cobot model and Rviz -> https://github.com/nerovalerius/collision_avoidance/launch/collision_avoidance.launch
-
-## Parameters to set
-### panda_moveit_config/config/sensors_d435_pointcloud
-* Point Cloud Topics and other params
-### panda_moveit_config/launchn/sensors_manager.launch: OctoMaps params and the config file for the 3D cameras.
-
-
-
-
-
-## Packages needed!
-Takes both 3D-Camera images and aligns them with the ICP-algorithm:
-www.github.com/nerovalerius/registration_3d
-
-MoveIt Control for the "Franka Panda" collaborative robot
-www.github.com/nerovalerius/panda_moveit_config
-
+`sh
+package/launch/start_everything.sh
+`
+The Following steps are conducted:
+- Start both 3D camera nodes
+- Align both 3D images and stream to a united output ros topic
+- Manually align the united 3D point clouds with the MoveIt Panda cobot model via ros tf
+- Preprocess the 3D point clouds - passthrough filter, outlier filter, voxel-grid fiilter
+- Start MoveIt and Rvize together with the 3D cobot model (https://github.com/nerovalerius/collision_avoidance/launch/collision_avoidance.launch)

@@ -33,9 +33,10 @@ Rviz with MoveIt!
 
 ## Usage
 This script starts MoveIt and Rviz with a demo robot. MoveIt gets the 3D data of the surroundings via the /move_group/monitored_planning_scene topic
-`sh
+```sh
 package/launch/start_everything.sh
-`
+```
+
 The Following steps are conducted:
 - Start both 3D camera nodes
 - Align both 3D images and stream to a united output ros topic

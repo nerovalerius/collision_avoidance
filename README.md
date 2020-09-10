@@ -39,17 +39,16 @@ If you use your own intel D435(i) 3D cameras:
 ```sh
 package/launch/start.sh
 ```
-However, you need to change the serial numbers to your intel cameras inside the script. 
-Furthermore, the alignment of both 3D point cloud streams is realized with the ICP algorithm. 
-This algorithm needs a coarse manual alignment of both cameras. 
-If the mounting position of your cameras differs from the one as seen in [registration_3d](https://github.com/nerovalerius/registration_3d.git),
-you need to change the manual alignment parameters inside (registration_3d/src/preprocess_align_publish.cpp](https://github.com/nerovalerius/registration_3d/blob/master/src/preprocess_align_publish.cpp) - line 522
-
+-   However, you need to change the serial numbers to your intel cameras inside the script. 
+    Furthermore, the alignment of both 3D point cloud streams is realized with the ICP algorithm. 
+    This algorithm needs a coarse manual alignment of both cameras. 
+    If the mounting position of your cameras differs from the one as seen in [registration_3d](https://github.com/nerovalerius/registration_3d.git),
+    you need to change the manual alignment parameters inside (registration_3d/src/preprocess_align_publish.cpp](https://github.com/nerovalerius/registration_3d/blob/master/src/preprocess_align_publish.cpp) - line 522
 
 
 The Following steps are conducted:
-- Start both 3D camera nodes
+- Start both 3D camera nodes / Rosbag - depending on which start script is used
 - Align both 3D images and stream to a united output ros topic
-- Manually align the united 3D point clouds with the MoveIt Panda cobot model via ros tf
+- Manually align the united 3D point clouds to the MoveIt Panda cobot model via ros tf
 - Preprocess the 3D point clouds - passthrough filter, outlier filter, voxel-grid fiilter
-- Start MoveIt and Rvize together with the 3D cobot model
+- Start MoveIt and Rviz together with the 3D cobot model

@@ -26,20 +26,26 @@ Afterwards, the point clouds are converted into Octomaps and visualized inside R
 - Execute `catkin_make` from the workspace to build all packages in the workspace.
 - Download the following rosbag file: [Link](https://drive.google.com/file/d/1eIEW_tNSs0p7Sgny7x9dS-HAtSRvAcDm/view?usp=sharing)
     - This is a 1 second sequence of both 3D cameras in our laboratory.
-    - Use `rosbag play -l 3d_cams.bag` to loop the 3D camera topics endlessly, simulating our laboratory environment.
-    - A real camera is not needed in this case, and you can test everything.
-
-The rosbag was recorded from both realsense-ros camera nodes with:
-```sh
-rosbag record -a -x "(.*)/cam_1/infra1/(.*)|(.*)/cam_2/infra1/(.*)|(.*)/cam_1/infra2/(.*)|(.*)/cam_2/infra2/(.*)|(.*)/cam_1/color/(.*)|(.*)/cam_2/color/(.*)|(.*)/cam_1/depth/image_rect_raw(.*)|(.*)/cam_2/depth/image_rect_raw/(.*)" --duration=1 -O 3d_cams.bag
-```
+    - Please adapt the location of the rosbag file inside the start_rosbag.sh file
 
 
 ## Usage
-This script starts MoveIt and Rviz with a demo robot. MoveIt gets the 3D data of the surroundings via the /move_group/monitored_planning_scene topic
+This script starts MoveIt and Rviz with a demo robot. A rosbag file streams fake 3D point cloud data recorded in our laboratory.
 ```sh
-package/launch/start_everything.sh
+package/launch/start_rosbag.sh
 ```
+
+If you use your own intel D435(i) 3D cameras:
+```sh
+package/launch/start.sh
+```
+However, you need to change the serial numbers to your intel cameras inside the script. 
+Furthermore, the alignment of both 3D point cloud streams is realized with the ICP algorithm. 
+This algorithm needs a coarse manual alignment of both cameras. 
+If the mounting position of your cameras differs from the one as seen in [registration_3d](https://github.com/nerovalerius/registration_3d.git),
+you need to change the manual alignment parameters inside (registration_3d/src/preprocess_align_publish.cpp](https://github.com/nerovalerius/registration_3d/blob/master/src/preprocess_align_publish.cpp) - line 522
+
+
 
 The Following steps are conducted:
 - Start both 3D camera nodes

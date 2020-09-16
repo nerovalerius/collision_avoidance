@@ -32,12 +32,12 @@ Afterwards, the point clouds are converted into Octomaps and visualized inside R
 ## Usage
 This script starts MoveIt and Rviz with a demo robot. A rosbag file streams fake 3D point cloud data recorded in our laboratory.
 ```sh
-package/launch/start_rosbag.sh
+rosrun collison_avoidance start_rosbag.sh
 ```
 
 If you use your own intel D435(i) 3D cameras:
 ```sh
-package/launch/start.sh
+rosrun collison_avoidance start.sh
 ```
 -   However, you need to change the serial numbers to your intel cameras inside the script. 
     Furthermore, the alignment of both 3D point cloud streams is realized with the ICP algorithm. 

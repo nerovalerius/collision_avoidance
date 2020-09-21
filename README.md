@@ -12,22 +12,36 @@ Afterwards, the point clouds are converted into Octomaps and visualized inside R
 - [Ubuntu Xenial](http://releases.ubuntu.com/16.04/)
 - [ROS Kinetic](http://wiki.ros.org/kinetic)
 
-
 ## Installation
 - Install Ubuntu and ROS.
 - Create a [catkin](http://wiki.ros.org/catkin) workspace (see [Creating a workspace for catkin](http://wiki.ros.org/catkin/Tutorials/create_a_workspace)).
 - Clone this repository into the workspace's `src` directory.
 - Clone other, required repositories into the `src` directory:
     - [registration_3d](https://github.com/nerovalerius/registration_3d.git)
-    - [franka_ros](https://github.com/nerovalerius/franka_ros.git)
     - [panda_moveit_config](https://github.com/nerovalerius/panda_moveit_config.git)
     - [realsense-ros](https://github.com/IntelRealSense/realsense-ros.git)
+- [clone and build libfranka 0.8.0 and franka_ros ](https://frankaemika.github.io/docs/installation_linux.html#building-from-source)
 - Execute `rosdep install -i --from-paths src` from the workspace to install ROS dependencies.
 - Execute `catkin_make` from the workspace to build all packages in the workspace.
 - Download the following rosbag file: [Link](https://drive.google.com/file/d/1eIEW_tNSs0p7Sgny7x9dS-HAtSRvAcDm/view?usp=sharing)
     - This is a 1 second sequence of both 3D cameras in our laboratory.
     - Please adapt the location of the rosbag file inside the start_rosbag.sh file
+- If you want to use the franka panda without a realtime kernel
 
+
+## Configuration
+- panda_moveit_config/config/sensors_d435_pointcloud: Point Cloud Topics and configuration of your 3D Cameras
+- panda_moveit_config/launchn/sensors_manager.launch: OctoMaps params, also loads the 3D Camera config yaml
+- panda_moveit_config/launch/move_group.launch: Change the refreshing framerate of OctoMap/Planning Scene for MoveIt
+    ```sh
+    <param name="planning_scene_monitor/publish_planning_scene_hz" value="30.0" />
+    ```
+
+- franka::RealtimeConfig::kIgnore must be set when instantiating franka::Robot class.
+    Otherwise the robot just runs with an FULL_PREEMPT_RT Kernel. Means: No Nvidia Drivers.
+    To use franka panda without a realtime kernel two possibilites exist:
+    - add the line `node_handle.setParam("realtime_config", std::string("ignore"));` inside `franka_ros/src/franka_control_node.cpp` after the node_handle is initalized and before franka_control.init() happens
+    - OR if your `franka_control_node.cpp` initalizes the robot with `franka::Robot robot(robot_ip);` - then change this line to `franka::Robot robot(robot_ip, franka::RealtimeConfig::kIgnore);`
 
 ## Usage
 This script starts MoveIt and Rviz with a demo robot. A rosbag file streams fake 3D point cloud data recorded in our laboratory.
@@ -52,3 +66,5 @@ The Following steps are conducted:
 - Manually align the united 3D point clouds to the MoveIt Panda cobot model via ros tf
 - Preprocess the 3D point clouds - passthrough filter, outlier filter, voxel-grid fiilter
 - Start MoveIt and Rviz together with the 3D cobot model
+
+

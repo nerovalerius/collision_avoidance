@@ -40,10 +40,10 @@ Afterwards, the point clouds are converted into Octomaps and visualized inside R
 - franka::RealtimeConfig::kIgnore must be set when instantiating franka::Robot class.
     Otherwise the robot just runs with an FULL_PREEMPT_RT Kernel. Means: No Nvidia Drivers.
     To use franka panda without a realtime kernel two possibilites exist:
-    - add the line `node_handle.setParam("realtime_config", std::string("ignore"));` inside `franka_ros/src/franka_control_node.cpp` after the node_handle is initalized and before franka_control.init() happens
+    - Use this PatchFile - big thanks to [krishnachaitanya7](https://github.com/krishnachaitanya7)
+        https://github.com/heracleia/Libfranka-Non-RT-Patch
+    - OR add the line `node_handle.setParam("realtime_config", std::string("ignore"));` inside `franka_ros/src/franka_control_node.cpp` after the node_handle is initalized and before franka_control.init() happens
     - OR if your `franka_control_node.cpp` initalizes the robot with `franka::Robot robot(robot_ip);` - then change this line to `franka::Robot robot(robot_ip, franka::RealtimeConfig::kIgnore);`
-- OR simply use this PatchFile - big thanks to [krishnachaitanya7](https://github.com/heracleia/Libfranka-Non-RT-Patch/commits?author=krishnachaitanya7)
-    https://github.com/heracleia/Libfranka-Non-RT-Patch
 
 
 ## Usage

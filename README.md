@@ -36,12 +36,15 @@ Afterwards, the point clouds are converted into Octomaps and visualized inside R
     ```sh
     <param name="planning_scene_monitor/publish_planning_scene_hz" value="30.0" />
     ```
-
+### Realtime Config
 - franka::RealtimeConfig::kIgnore must be set when instantiating franka::Robot class.
     Otherwise the robot just runs with an FULL_PREEMPT_RT Kernel. Means: No Nvidia Drivers.
     To use franka panda without a realtime kernel two possibilites exist:
     - add the line `node_handle.setParam("realtime_config", std::string("ignore"));` inside `franka_ros/src/franka_control_node.cpp` after the node_handle is initalized and before franka_control.init() happens
     - OR if your `franka_control_node.cpp` initalizes the robot with `franka::Robot robot(robot_ip);` - then change this line to `franka::Robot robot(robot_ip, franka::RealtimeConfig::kIgnore);`
+- OR simply use this PatchFile - big thanks to [krishnachaitanya7](https://github.com/heracleia/Libfranka-Non-RT-Patch/commits?author=krishnachaitanya7)
+    https://github.com/heracleia/Libfranka-Non-RT-Patch
+
 
 ## Usage
 This script starts MoveIt and Rviz with a demo robot. A rosbag file streams fake 3D point cloud data recorded in our laboratory.
